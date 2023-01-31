@@ -7,6 +7,7 @@ public class ChessMatch {
 
     public ChessMatch(){
         board = new Board(8,8);
+        initialSetup();
     }
     public ChessPiece[][] getPieces(){
         ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
@@ -16,6 +17,9 @@ public class ChessMatch {
             }
         }
         return mat;
+
+    }
+    public void initialSetup(){
 
     }
 
