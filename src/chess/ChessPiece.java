@@ -20,6 +20,16 @@ public abstract class ChessPiece extends Piece {
         return color;
     }
 
+    public int getMoveCount() {
+        return moveCount;
+    }
+    public int increasetMoveCount(){
+        return moveCount++;
+    }
+    public int decreaseMoveCount(){
+        return moveCount--;
+    }
+
     protected boolean IsThereAOpponentPiece(Position position){
         ChessPiece p = (ChessPiece) getBoard().piece(position);
         return p != null && p.getColor() != color;
