@@ -17,6 +17,7 @@ public class ChessMatch {
     private Board board;
 
     private boolean check;
+    private boolean checkMate;
 
     private List<Piece> pieceOntheBoard = new ArrayList<>();
     private List<Piece> capturedPieces = new ArrayList<>();
@@ -38,6 +39,9 @@ public class ChessMatch {
 
     public boolean getCheck(){
         return check;
+    }
+    public boolean getCheckMate(){
+        return checkMate;
     }
     public ChessPiece[][] getPieces(){
         ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
@@ -67,8 +71,14 @@ public class ChessMatch {
         }
 
         check = (testChekc(opponent(currentPlayer))) ? true : false;
+        if (testCheckMate(opponent(currentPlayer))){
+            checkMate = true;
+        }
+        else {
+            nextTurn();
+        }
 
-        nextTurn();
+
         return (ChessPiece) capturedPiece;
     }
 
@@ -120,6 +130,32 @@ public class ChessMatch {
             }
         }
         return false;
+    }
+
+    private boolean testCheckMate(Color color){
+        if (!testChekc(color)){
+            return false;
+        }
+        List<Piece> pieces = pieceOntheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == opponent(color)).collect(Collectors.toList());
+        for (Piece p : pieces){
+            boolean[][] mat = p.possibleMoves();
+            for (int i = 1; i< board.getRows(); i++){
+                for (int j = 1; j < board.getColumns(); j++){
+                    if (mat[i][j]){
+                        Position source = ((ChessPiece) p).getChessPosition().toPosition();
+                        Position target = new Position(i, j);
+                        Piece capturedPiece = makeMove(source,target);
+                        boolean testChek = testChekc(color);
+                        undoMove(source, target, capturedPiece);
+                        if (!testChek){
+                            return false;
+                        }
+                    }
+
+                }
+            }
+        }
+        return true;
     }
 
     private void validateSourcePosition(Position position){
